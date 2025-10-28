@@ -5,6 +5,7 @@ import { LearningSidebar } from "@/components/LearningSidebar";
 import { Flashcards } from "@/components/Flashcards";
 import { Situations } from "@/components/Situations";
 import { Tests } from "@/components/Tests";
+import { ChatBot } from "@/components/ChatBot";
 
 export type LearningMode = 'flashcards' | 'situations' | 'tests';
 
@@ -35,6 +36,8 @@ const Learn = () => {
           {mode === 'situations' && <Situations situations={courseData.situations} />}
           {mode === 'tests' && <Tests tests={courseData.tests} />}
         </main>
+
+        <ChatBot courseContext={courseData.mindmap?.title} />
       </div>
     </SidebarProvider>
   );
