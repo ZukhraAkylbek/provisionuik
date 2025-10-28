@@ -21,6 +21,15 @@ export function Situations({ situations }: SituationsProps) {
 
   const handleNext = () => {
     setCurrentIndex((prev) => (prev + 1) % situations.length);
+    
+    // Save situation completion to localStorage
+    const situationResults = JSON.parse(localStorage.getItem('situationResults') || '[]');
+    situationResults.push({
+      correct: true,
+      type: 'communication',
+      timestamp: new Date().toISOString(),
+    });
+    localStorage.setItem('situationResults', JSON.stringify(situationResults));
   };
 
   const handlePrev = () => {

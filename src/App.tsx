@@ -6,6 +6,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Mindmap from "./pages/Mindmap";
 import Learn from "./pages/Learn";
+import Profile from "./pages/Profile";
+import Interview from "./pages/Interview";
+import JobMatch from "./pages/JobMatch";
+import HRDashboard from "./pages/HRDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -20,6 +24,10 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/mindmap" element={<Mindmap />} />
           <Route path="/learn" element={<Learn />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/interview" element={<Interview />} />
+          <Route path="/job-match" element={<JobMatch />} />
+          <Route path="/hr-dashboard" element={<HRDashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

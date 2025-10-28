@@ -39,6 +39,15 @@ export function Tests({ tests }: TestsProps) {
   const handleSubmit = () => {
     if (selectedAnswer !== null) {
       setShowResult(true);
+      
+      // Save result to localStorage
+      const testResults = JSON.parse(localStorage.getItem('testResults') || '[]');
+      testResults.push({
+        correct: selectedAnswer === currentTest.correctAnswer,
+        type: 'analytical',
+        timestamp: new Date().toISOString(),
+      });
+      localStorage.setItem('testResults', JSON.stringify(testResults));
     }
   };
 

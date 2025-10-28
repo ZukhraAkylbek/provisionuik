@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Sparkles, BookOpen, Brain, GraduationCap } from "lucide-react";
+import { Sparkles, BookOpen, Brain, GraduationCap, Users } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -93,6 +93,17 @@ const Index = () => {
             </Button>
           </div>
         </Card>
+
+        <div className="flex justify-center mt-6">
+          <Button
+            onClick={() => navigate('/hr-dashboard')}
+            variant="outline"
+            className="gap-2"
+          >
+            <Users className="w-4 h-4" />
+            HR Панель
+          </Button>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-400">
           <Card className="p-6 text-center hover:shadow-elevated transition-all hover:-translate-y-1">
