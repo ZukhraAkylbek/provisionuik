@@ -15,9 +15,9 @@ serve(async (req) => {
     const { topic } = await req.json();
     console.log('Generating course for topic:', topic);
 
-    const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
-    if (!GEMINI_API_KEY) {
-      throw new Error('GEMINI_API_KEY is not configured');
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    if (!LOVABLE_API_KEY) {
+      throw new Error('LOVABLE_API_KEY is not configured');
     }
 
     const prompt = `Создай структуру образовательного курса на тему: "${topic}".
@@ -61,41 +61,48 @@ serve(async (req) => {
   ]
 }
 
-Создай минимум 3 модуля, 10 флэшкарт, 5 ситуаций и 10 тестов. Весь контент должен быть на русском языке.`;
+Создай минимум 3 модуля, 10 флэшкарт, 5 ситуаций и 10 тестов. Весь контент должен быть на русском языке. Верни только JSON, без дополнительного текста.`;
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`,
+      'https://ai.gateway.lovable.dev/v1/chat/completions',
       {
         method: 'POST',
         headers: {
+          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: prompt
-            }]
-          }],
-          generationConfig: {
-            temperature: 0.7,
-            topK: 40,
-            topP: 0.95,
-            maxOutputTokens: 8192,
-          }
+          model: 'google/gemini-2.5-flash',
+          messages: [
+            { role: 'user', content: prompt }
+          ],
+          temperature: 0.7,
         }),
       }
     );
 
     if (!response.ok) {
+      if (response.status === 429) {
+        return new Response(
+          JSON.stringify({ error: 'Превышен лимит запросов, попробуйте позже' }),
+          { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      if (response.status === 402) {
+        return new Response(
+          JSON.stringify({ error: 'Требуется пополнение баланса' }),
+          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
       const errorText = await response.text();
-      console.error('Gemini API error:', response.status, errorText);
-      throw new Error(`Gemini API error: ${response.status}`);
+      console.error('AI gateway error:', response.status, errorText);
+      throw new Error(`AI gateway error: ${response.status}`);
     }
 
     const data = await response.json();
-    console.log('Gemini response received');
+    console.log('AI response received');
 
-    const generatedText = data.candidates[0].content.parts[0].text;
+    const generatedText = data.choices[0].message.content;
     
     // Extract JSON from the response (remove markdown code blocks if present)
     let jsonText = generatedText;

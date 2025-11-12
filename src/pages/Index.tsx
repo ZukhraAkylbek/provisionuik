@@ -24,7 +24,16 @@ const Index = () => {
         body: { topic }
       });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message?.includes('429')) {
+          toast.error("Превышен лимит запросов. Попробуйте позже.");
+        } else if (error.message?.includes('402')) {
+          toast.error("Требуется пополнение баланса Lovable AI.");
+        } else {
+          toast.error("Ошибка при генерации курса");
+        }
+        throw error;
+      }
 
       // Store the generated course data in sessionStorage
       sessionStorage.setItem('courseData', JSON.stringify(data));
@@ -34,7 +43,6 @@ const Index = () => {
       toast.success("Курс успешно сгенерирован!");
     } catch (error) {
       console.error('Error generating course:', error);
-      toast.error("Ошибка при генерации курса");
     } finally {
       setIsLoading(false);
     }
